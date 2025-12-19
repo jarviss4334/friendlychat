@@ -94,10 +94,21 @@ io.on('connection', socket=>{
 
   socket.on('requestActive', (room) => broadcastMembers(room || userRoom[socket.id] || 'global'));
   socket.on('clearChat', () => socket.emit('clearChat'));
+//NEW NIGGERRR
+
+socket.on("voiceMessage", ({ room, name, audio }) => {
+  const r = room || userRoom[socket.id] || "global";
+  io.to(r).emit("message", {
+    type: "chat",
+    name,
+    audio
+  });
+});
 
   socket.on('disconnect', ()=>{
     const name = users[socket.id];
     const room = userRoom[socket.id] || 'global';
+
     if(name){
       console.log('disconnect', name);
       io.to(room).emit('message', { type:'system', msg: `${name} left the chat.` });
