@@ -1,90 +1,50 @@
-# 💬 AVARATHAM PARAYUKA POVUKA – Real-Time Chat Web App
+**Public Chat App**
+====================
+### Introduction
 
-A beautiful **Instagram-style real-time chat** built with **Node.js**, **Express**, and **Socket.io**, featuring both **global** and **private chat rooms** with smooth animations, glowing effects, and Malayalam-styled vibes 🔥
+Public Chat App is a web service that allows users to chat with each other in a group setting, with no limits on the number of participants. Our app is designed to provide a seamless and intuitive chatting experience, making it easy for people to connect and converse with each other.
 
----
+### Features
 
-## ✨ Features
+* **Group Chat**: Chat with an unlimited number of people in a single group
+* **Real-time Messaging**: Send and receive messages in real-time
+* **No Registration Required**: Chat anonymously, no need to create an account
+* **Simple and Intuitive Interface**: Easy to use, even for those who are not tech-savvy
 
-- 🌍 **Global Chatroom**
-  - Golden glowing header: `AVARATHAM PARAYUKA POVUKA`
-  - Stylish message bubbles (violet-magenta for you, white for others)
-  - Smooth join/leave animations with wobble effect  
-  - Typing indicator with shimmering glow ✨
-  - Active users list that updates live
+### Getting Started
 
-- 🔒 **Private Rooms**
-  - Create or join private chats using a 4-digit PIN  
-  - Custom background: `https://files.catbox.moe/5zmuac.jpg`
-  - Isolated message and member system  
-  - “Leave Room” button to return to the global chat
+1. **Clone the Repository**: `git clone https://github.com/your-username/public-chat-app.git`
+2. **Install Dependencies**: `npm install`
+3. **Start the Server**: `npm start`
+4. **Open in Browser**: `http://localhost:3000`
 
-- 💫 **Smooth UI**
-  - Entry popup with “PER PARADA MYRE” name input  
-  - All transitions have glowing, ripple, and wobble effects  
-  - Optimized mobile-style chat layout  
+### Contributing
 
----
+We welcome contributions to our project! If you'd like to contribute, please follow these steps:
 
-## 🧠 Tech Stack
+1. **Fork the Repository**: Create a fork of our repository
+2. **Make Changes**: Make the changes you'd like to contribute
+3. **Create a Pull Request**: Submit a pull request with your changes
 
-- **Frontend:** HTML, CSS, JavaScript (reby.js)
-- **Backend:** Node.js, Express (pottan.js)
-- **Realtime Engine:** Socket.io
-- **Hosting:** Render (24×7 runtime)
+### Buttons
 
----
+We've included some premium buttons to enhance the user experience:
 
-## ⚙️ Setup and Run Locally
+* <button style="background-color: #4CAF50; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Send</button>
+* <button style="background-color: #4CAF50; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Join Chat</button>
+* <button style="background-color: #e74c3c; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Leave Chat</button>
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/konayadi.git
-   cd konayadi
+### License
 
-Install dependencies
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
 
-npm install
+### Acknowledgments
 
-Run the server
+* Thanks to [Your Name] for creating this project
+* Thanks to [Contributor Name] for contributing to this project
 
-node pottan.js
+### Support
 
+If you need support or have any questions, please don't hesitate to reach out to us. We're always happy to help.
 
-🚀 Deploying on Render
-
-
-Create a new Web Service on Render.
-
-
-Connect your GitHub repo.
-
-
-Use:
-
-
-Build Command: npm install
-
-
-Start Command: node pottan.js
-
-
-
-
-Render automatically provides a live public URL.
-
-
-
-💜 Credits
-Created with ❤️ by Thejus (@jarviss4334)
-Inspired by some avaratham sites
-
-📸 Preview
-Global Chat:
-
-Private Room:
-
-
----
-
-Would you like me to include a **“Contributors”** or **“Future Plans”** section too (like “upcoming voice messages, emoji reactions”)? It’ll make your README look even more professional.
+<a href="https://www.buymeacoffee.com/your-username" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
