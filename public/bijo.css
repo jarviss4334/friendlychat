@@ -4,10 +4,6 @@
   --accent-gradient: linear-gradient(135deg, #8e44ad, #e84393);
   --bubble-radius: 18px;
 }
-
-/* =======================================================================
-   RESET & GLOBAL
-   ======================================================================= */
 * {
   box-sizing: border-box;
 }
@@ -19,17 +15,13 @@ html, body {
 }
 
 body {
-  background: url("https://files.catbox.moe/3jvej7.jpg") center/cover fixed no-repeat;
+background: url("./images/bg-global.jpg") center/cover fixed no-repeat;
   color: #fff;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-image .5s ease;
 }
-
-/* =======================================================================
-   OVERLAY (LOGIN)
-   ======================================================================= */
 .overlay {
   position: fixed;
   inset: 0;
@@ -83,10 +75,6 @@ body {
   font-weight: 700;
   cursor: pointer;
 }
-
-/* =======================================================================
-   TOPBAR & HEADING
-   ======================================================================= */
 .topbar {
   display: flex;
   align-items: center;
@@ -108,10 +96,6 @@ body {
   from { text-shadow: 0 0 10px rgba(255,215,0,0.7); }
   to   { text-shadow: 0 0 30px rgba(255,200,60,0.95); }
 }
-
-/* =======================================================================
-   MENU (3 DOTS)
-   ======================================================================= */
 .menuWrap {
   position: absolute;
   right: 18px;
@@ -163,10 +147,6 @@ body {
   from { transform: scale(.85); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
 }
-
-/* =======================================================================
-   LAYOUT
-   ======================================================================= */
 .content {
   display: flex;
   height: calc(100vh - 68px);
@@ -174,7 +154,6 @@ body {
   padding: 10px;
 }
 
-/* Sidebar */
 .sidebar {
   width: 170px;
   padding: 12px;
@@ -190,7 +169,6 @@ body {
   color: var(--gold);
 }
 
-/* Members List */
 #membersList {
   margin: 0;
   padding: 0;
@@ -215,18 +193,12 @@ body {
   background: var(--gold);
   box-shadow: 0 0 8px rgba(255,215,0,0.4);
 }
-
-/* =======================================================================
-   CHAT COLUMN
-   ======================================================================= */
 .chatColumn {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
-/* Message List */
 .messages {
   flex: 1;
   overflow: auto;
@@ -238,8 +210,6 @@ body {
   scroll-behavior: smooth;
   background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
 }
-
-/* Message Bubbles */
 .message {
   max-width: 72%;
   padding: 10px 12px;
@@ -267,7 +237,6 @@ body {
   opacity: 0.9;
 }
 
-/* System Messages */
 .system {
   align-self: center;
   font-weight: 700;
@@ -285,10 +254,6 @@ body {
   50%  { transform: translateY(4px) rotate(2deg); }
   100% { transform: none; }
 }
-
-/* =======================================================================
-   TYPING INDICATOR
-   ======================================================================= */
 .typingIndicator {
   height: 24px;
   padding: 6px 12px;
@@ -308,10 +273,6 @@ body {
   50%  { filter: brightness(1.12); }
   100% { filter: brightness(1); }
 }
-
-/* =======================================================================
-   INPUT BAR
-   ======================================================================= */
 .inputBar {
   display: flex;
   gap: 10px;
@@ -319,6 +280,7 @@ body {
   align-items: center;
   position: relative;
 }
+
 
 .inputBar input {
   flex: 1;
@@ -342,9 +304,7 @@ body {
   box-shadow: 0 8px 24px rgba(0,0,0,0.45);
 }
 
-/* =======================================================================
-   MOBILE RESPONSIVE (ONLY THIS BLOCK IS ADJUSTED)
-   ======================================================================= */
+
 @media (max-width: 780px) {
 
   body {
@@ -375,45 +335,38 @@ body {
     height: calc(100vh - 230px) !important;
     position: relative;
   }
-
-  /* ensure messages have enough bottom space so input + typingIndicator don't overlap content */
   .messages {
     flex: 1;
     padding-bottom: calc(var(--mobile-input-height, 70px) + 20px) !important;
     overflow-y: auto !important;
   }
+ .inputBar {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px !important;
+  position: fixed !important;
+  z-index: 99999;
+  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.55);
+  --mobile-input-height: 70px; 
+}
 
-  /* inputbar becomes fixed at bottom on mobile (unchanged behavior) */
-  .inputBar {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 12px !important;
-    position: fixed !important;
-    z-index: 99999; /* above most stuff */
-    backdrop-filter: blur(8px);
-    background: rgba(0,0,0,0.55);
-    --mobile-input-height: 70px; /* used to calculate typingIndicator/messaging padding */
-  }
+.inputBar input {
+  padding: 12px !important;
+}
 
-  .inputBar input {
-    padding: 12px !important;
-  }
+.inputBar button {
+  width: 46px !important;
+  height: 46px !important;
+}
 
-  .inputBar button {
-    width: 46px !important;
-    height: 46px !important;
-  }
 
   #leaveRoom {
     bottom: 80px !important;
     left: 15px !important;
     z-index: 99999;
   }
-
-  /* Typing indicator: positioned inside the messaging area directly above the input bubble.
-     It's fixed so it stays visible above the fixed input bar but remains visually within
-     messaging interface. This ensures it does not float unexpectedly elsewhere. */
   .typingIndicator {
     position: fixed;
     left: 12px;
@@ -425,9 +378,6 @@ body {
     height: auto;
     display: block;
   }
-
-  /* Menu popup: keep same look but ensure it's above sidebar (M3).
-     Make it fixed and to the right so it doesn't get covered by the active list. */
   .menuPopup {
     position: fixed !important;
     top: 56px !important;
@@ -435,8 +385,6 @@ body {
     z-index: 100000 !important;
     min-width: 150px;
   }
-
-  /* ensure the menu button sits visibly on top (three dots) */
   .menuWrap {
     position: absolute;
     right: 12px;
@@ -445,9 +393,6 @@ body {
   }
 }
 
-/* =======================================================================
-   ANIMATIONS
-   ======================================================================= */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: none; }
@@ -458,9 +403,6 @@ body {
   to   { opacity: 1; transform: none; }
 }
 
-/* =======================================================================
-   PRIVATE ROOM SLIDESHOW
-   ======================================================================= */
 .slideshow-layer {
   position: fixed;
   inset: 0;
@@ -475,17 +417,13 @@ body {
 .slideshow-layer.top {
   opacity: 1;
 }
-/* =======================================================================
-   WHATSAPP-STYLE ACTION BUTTON (FINAL CLEAN)
-   ======================================================================= */
+
 
 .inputBar {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
-/* Base button */
 #actionBtn {
   width: 46px;
   height: 46px;
@@ -500,25 +438,19 @@ body {
   padding: 0;
   position: relative;
 
-  background: #25d366; /* always green */
+  background: #25d366; 
   color: white;
   font-size: 24px;
   line-height: 1;
   transition: transform 0.2s ease;
 }
-
-/* MIC MODE */
 #actionBtn.mic {
-  background: #25d366; /* green circle */
+  background: #25d366; 
 }
-
-/* SEND MODE */
 #actionBtn.send {
-  background: #25d366; /* green circle */
-  transform: scale(1.05); /* optional animation for send */
+  background: #25d366;
+  transform: scale(1.05); 
 }
-
-/* RECORDING PULSE */
 #actionBtn.recording {
   animation: pulse 1s infinite;
 }
@@ -527,12 +459,10 @@ body {
   0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
   100% { box-shadow: 0 0 0 14px rgba(239,68,68,0); }
 }
-
-/* Press-and-hold recording animation */
 #actionBtn.recording {
   animation: pulse 1s infinite;
   transform: scale(1.2);
-  background: #ef4444; /* red recording color */
+  background: #ef4444;
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
