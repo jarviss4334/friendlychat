@@ -13,7 +13,7 @@ Public Chat App is a web service that allows users to chat with each other in a 
 
 ### Getting Started
 
-1. **Clone the Repository**: `git clone https://github.com/your-username/public-chat-app.git`
+1. **Clone the Repository**: `git clone https://github.com/jarviss4334/friendlychat.git`
 2. **Install Dependencies**: `npm install`
 3. **Start the Server**: `npm start`
 4. **Open in Browser**: `http://localhost:3000`
