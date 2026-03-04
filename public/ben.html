@@ -7,11 +7,8 @@
   <link rel="stylesheet" href="bijo.css" />
 </head>
 <body>
-  <!-- 🔥 SLIDESHOW LAYERS -->
   <div id="slide1" class="slideshow-layer top"></div>
   <div id="slide2" class="slideshow-layer"></div>
-
-  <!-- Overlay for name input -->
   <div class="overlay">
     <div class="popup">
       <h2>WHAT'S YOUR NAME NIGGA!☠️</h2>
@@ -19,8 +16,6 @@
       <button id="joinBtn">Join Chat</button>
     </div>
   </div>
-
-  <!-- Main Chat App -->
   <div id="app" class="hidden">
     <header class="topbar">
       <h1 id="heading" class="glow-text">CHAT FOR FUN NOT FOR GUN🌛❤️</h1>
@@ -30,45 +25,31 @@
         <div id="menuPopup" class="menuPopup hidden">
           <button id="createRoom" class="menuItem">👻 Create Room</button>
           <button id="joinRoom" class="menuItem">🔑 Join Room</button>
-
-          <!-- 🔥 MUSIC TOGGLE BUTTON -->
           <button id="toggleMusic" class="menuItem">🎵 Music: OFF</button>
         </div>
       </div>
     </header>
-
     <div class="content">
       <aside class="sidebar">
         <h3>Active Users 👥</h3>
         <ul id="membersList"></ul>
       </aside>
-
       <section class="chatColumn">
         <div class="messages"></div>
-
-        <!-- Typing indicator: placed inside chatColumn (visible area),
-             on mobile it will appear just above the input bar -->
         <div class="typingIndicator"></div>
 
         <div class="inputBar">
   <input id="messageInput" type="text" placeholder="Type a message..." autocomplete="off" />
   <button id="actionBtn" class="mic">🎤</button>
 </div>
-
-
           <button id="leaveRoom"
             class="hidden"
             style="position: absolute; left: 18px; bottom: 18px; z-index:50;">
             🚪 Leave Room
-
-
-
-        </div>
+   </div>
       </section>
     </div>
   </div>
-
-  <!-- 🔥 HIDDEN AUDIO PLAYER -->
   <audio id="bgMusic" preload="auto"></audio>
 
   <script src="/socket.io/socket.io.js"></script>
