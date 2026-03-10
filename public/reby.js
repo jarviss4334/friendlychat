@@ -30,6 +30,56 @@ document.addEventListener("DOMContentLoaded", () => {
     initShockwave();
   }
 });
+function lightningStrike(messages) {
+  if (typeof THREE === 'undefined') return;
+
+  // Lightning geometry: jagged line
+  const points = [];
+  let x = 0, y = 10, z = 0; // start above camera
+  for (let i = 0; i < 5; i++) {
+    x += (Math.random() - 0.5) * 2;
+    y -= 2 + Math.random() * 2;
+    z += (Math.random() - 0.5) * 2;
+    points.push(new THREE.Vector3(x, y, z));
+  }
+
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  const material = new THREE.LineBasicMaterial({ color: 0xffffee, linewidth: 2 });
+  const lightning = new THREE.Line(geometry, material);
+  scene.add(lightning);
+
+  // Lightning flash effect
+  const flash = new THREE.PointLight(0xffffff, 5, 50);
+  flash.position.set(0, 5, 0);
+  scene.add(flash);
+
+  let elapsed = 0;
+  const duration = 0.3; // 0.3 sec flash
+  const animateLightning = () => {
+    if (elapsed < duration) {
+      flash.intensity = 5 * Math.sin((elapsed / duration) * Math.PI);
+      renderer.render(scene, camera);
+      elapsed += 0.016;
+      requestAnimationFrame(animateLightning);
+    } else {
+      scene.remove(lightning);
+      scene.remove(flash);
+      renderer.render(scene, camera);
+    }
+  };
+  animateLightning();
+  messages.forEach((msg, index) => {
+    msg.style.transition = 'transform 1s ease-out, opacity 1s ease';
+    setTimeout(() => {
+      const dx = (Math.random() - 0.5) * 500;
+      const dy = -window.innerHeight - Math.random() * 200;
+      const dz = (Math.random() - 0.5) * 500;
+      msg.style.transform = `translate3d(${dx}px, ${dy}px, ${dz}px) rotate(${Math.random()*720}deg) scale(0.2)`;
+      msg.style.opacity = '0';
+    }, index * 50); 
+  });
+  setTimeout(() => messagesDiv.innerHTML = '', messages.length * 50 + 1000);
+}
 function activateShockwave() {
   if (typeof THREE === "undefined") return;
   if (!shockwaveMesh) initShockwave();
@@ -321,23 +371,62 @@ socket.on('roomJoined', (code) => {
   socket.emit('clearChat');
 });
 socket.on('clearChat', () => {
-  activateShockwave();
-  const messages = document.querySelectorAll('.messages .message');
-  messages.forEach((msg, index) => {
-    msg.classList.add('cinematic');
-    msg.style.transition = 'transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease, filter 1s ease';
-    setTimeout(() => {
-      msg.style.transform = `translateZ(300px) rotateX(${720 + index * 20}deg) rotateY(${360 + index * 15}deg) scale(0.1)`;
-      msg.style.opacity = '0';
-      msg.style.filter = 'blur(5px)';
-    }, index * 80); 
-  });
-  document.body.style.transition = 'transform 0.3s ease';
-  document.body.style.transform = 'scale(1.02)';
+  const messages = Array.from(document.querySelectorAll('.messages .message'));
+
+  // ---------- 1. Screen shake ----------
+  document.body.style.transition = 'transform 0.1s ease';
+  document.body.style.transform = 'scale(1.02) rotateZ(1deg)';
   setTimeout(() => {
-    document.body.style.transform = 'scale(1)';
-  }, 300);
+    document.body.style.transform = 'scale(1) rotateZ(0)';
+  }, 200);
+
+  // ---------- 2. Message hurricane effect ----------
+  messages.forEach((msg, index) => {
+    msg.style.transition =
+      'transform 1.5s cubic-bezier(0.77,0,0.175,1), opacity 1.2s ease, filter 1s ease';
+    
+    setTimeout(() => {
+      const angle = Math.random() * Math.PI * 2; // spin around
+      const radius = 200 + Math.random() * 300; // distance from center
+      const height = -window.innerHeight - Math.random() * 400; // fly upward
+      const rx = 720 + Math.random() * 360;
+      const ry = 720 + Math.random() * 360;
+      msg.style.transform = `translate3d(${Math.cos(angle) * radius}px, ${height}px, ${Math.sin(angle) * radius}px) rotateX(${rx}deg) rotateY(${ry}deg) scale(0.1)`;
+      msg.style.opacity = '0';
+      msg.style.filter = 'blur(8px)';
+    }, index * 50);
+  });
+
+  // ---------- 3. Remove messages ----------
   setTimeout(() => {
     messagesDiv.innerHTML = '';
-  }, messages.length * 80 + 1000);
+  }, messages.length * 50 + 1500);
+
+  // ---------- 4. Optional: add tornado particle effect in Three.js ----------
+  if (typeof THREE !== 'undefined' && scene) {
+    for (let i = 0; i < 20; i++) {
+      const particle = new THREE.Mesh(
+        new THREE.SphereGeometry(0.05, 4, 4),
+        new THREE.MeshBasicMaterial({ color: 0xffffff })
+      );
+      particle.position.set((Math.random() - 0.5) * 5, 0, (Math.random() - 0.5) * 5);
+      scene.add(particle);
+
+      let t = 0;
+      const animateParticle = () => {
+        if (t < 2) {
+          const angle = t * 20 + i;
+          particle.position.x = Math.cos(angle) * (0.5 + t * 3);
+          particle.position.z = Math.sin(angle) * (0.5 + t * 3);
+          particle.position.y = t * 5;
+          renderer.render(scene, camera);
+          t += 0.05;
+          requestAnimationFrame(animateParticle);
+        } else {
+          scene.remove(particle);
+        }
+      };
+      animateParticle();
+    }
+  }
 });
