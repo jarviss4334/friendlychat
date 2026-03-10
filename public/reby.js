@@ -1,3 +1,41 @@
+let scene, camera, renderer, shockwaveMesh, clock;
+function initShockwave() {
+  if (typeof THREE === "undefined") {
+    console.error("Three.js is not loaded yet!");
+    return;
+  }
+  const container = document.getElementById('shockwaveContainer');
+  if (!container) return console.error("Shockwave container not found!");
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 5;
+  renderer = new THREE.WebGLRenderer({ alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
+  clock = new THREE.Clock();
+  const geometry = new THREE.SphereGeometry(0.1, 32, 32);
+  const material = new THREE.MeshBasicMaterial({
+    color: 0x00ffff,
+    wireframe: true,
+    transparent: true,
+    opacity: 1
+  });
+  shockwaveMesh = new THREE.Mesh(geometry, material);
+  scene.add(shockwaveMesh);
+  shockwaveMesh.visible = false;
+  animateShockwave();
+}
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof THREE !== "undefined") {
+    initShockwave();
+  }
+});
+function activateShockwave() {
+  if (typeof THREE === "undefined") return;
+  if (!shockwaveMesh) initShockwave();
+  shockwaveMesh.visible = true;
+  if (clock && clock.start) clock.start();
+}
 console.log('reby.js loaded');
 const socket = io();
 const nameInput = document.getElementById('nameInput');
@@ -15,11 +53,10 @@ const joinRoomBtn = document.getElementById('joinRoom');
 const leaveRoomBtn = document.getElementById('leaveRoom');
 const toggleMusicBtn = document.getElementById('toggleMusic');
 const actionBtn = document.getElementById("actionBtn");
-
 let mediaRecorder;
 let audioChunks = [];
 let recording = false;
-const playlist = ["https://files.catbox.moe/6ywqzp.mp4","https://files.catbox.moe/hjv93p.mp4"];
+const playlist = ["https://files.catbox.moe/ergpmh.mp4","https://files.catbox.moe/6ywqzp.mp4","https://files.catbox.moe/hjv93p.mp4"];
 let currentTrack = 0;
 let musicEnabled = true;
 const audioPlayer = new Audio();
@@ -32,7 +69,6 @@ audioPlayer.addEventListener("ended", () => {
 });
 function startMusic() { if (!musicEnabled) return; audioPlayer.src = playlist[currentTrack]; audioPlayer.play().catch(() => {}); }
 function stopMusic() { audioPlayer.pause(); audioPlayer.currentTime = 0; }
-
 if (toggleMusicBtn) {
   toggleMusicBtn.textContent = musicEnabled ? "🎵 Music: ON" : "🎵 Music: OFF";
   toggleMusicBtn.addEventListener("click", () => {
@@ -51,11 +87,9 @@ const privateImages = [
   "/images/slider7.jpg",
   "/images/slider8.jpg",
 ];
-
 let slideIndex = 0, slideInterval = null, showingA = true;
 const slideA = document.getElementById("slide1");
 const slideB = document.getElementById("slide2");
-
 function startSlideshow() {
   stopSlideshow();
   slideA.style.backgroundImage = `url('${privateImages[0]}')`;
@@ -64,7 +98,6 @@ function startSlideshow() {
   slideA.classList.add("top");
   slideB.classList.remove("top");
   showingA = true;
-
   slideInterval = setInterval(() => {
     const next = privateImages[(slideIndex + 1) % privateImages.length];
     if (showingA) {
@@ -80,25 +113,19 @@ function startSlideshow() {
     slideIndex = (slideIndex + 1) % privateImages.length;
   }, 30000);
 }
-
 function stopSlideshow() {
   clearInterval(slideInterval);
   slideInterval = null;
   slideA.classList.add("top");
   slideB.classList.remove("top");
 }
-
-// ------------------- CHAT -------------------
 let username = '';
 let currentRoom = 'global';
 let typingTimer = null;
-
 function showApp() {
   document.querySelector('.overlay')?.classList.add('hidden');
   app.classList.remove('hidden');
 }
-
-// Append standard message
 function appendMessage(type, payload) {
   const el = document.createElement('div');
   if (type === 'system') {
@@ -117,8 +144,6 @@ function appendMessage(type, payload) {
   messagesDiv.appendChild(el);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
-
-// Append voice message with waves
 function appendVoiceMessage(name, audioSrc, isMe) {
   const el = document.createElement('div');
   el.className = isMe ? 'message msg-right' : 'message msg-left';
@@ -133,12 +158,10 @@ function appendVoiceMessage(name, audioSrc, isMe) {
   `;
   messagesDiv.appendChild(el);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
   const audio = new Audio(audioSrc);
   audio.preload = 'auto';
   const playBtn = el.querySelector('.play-btn');
   const waveEl = el.querySelector('.voice-wave');
-
   playBtn.addEventListener('click', () => {
     if (audio.paused) {
       audio.play();
@@ -150,29 +173,23 @@ function appendVoiceMessage(name, audioSrc, isMe) {
       playBtn.textContent = '▶️';
     }
   });
-
   audio.addEventListener('ended', () => {
     waveEl.classList.remove('playing');
     playBtn.textContent = '▶️';
   });
 }
-
-// ------------------- JOIN -------------------
 joinBtn.addEventListener('click', () => {
   const v = nameInput.value.trim();
   if (!v) return alert('Enter your name');
   username = v;
   localStorage.setItem('chat_name', username);
   showApp();
-  heading.textContent = 'CHAT FOR FUN NOT FOR GUN🌛❤️';
+  heading.textContent = 'IN THE END ALWAYS THE BIGGEST ONE WINS☠️';
   socket.emit('joinGlobal', username);
 });
-
 nameInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') joinBtn.click();
 });
-
-// ------------------- SEND MESSAGE -------------------
 function sendMessage() {
   const text = messageInput.value.trim();
   if (!text) return;
@@ -183,15 +200,12 @@ function sendMessage() {
   actionBtn.textContent = "🎤";
   socket.emit('stopTyping', { name: username, room: currentRoom });
 }
-
 messageInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
     if (messageInput.value.trim()) sendMessage();
   }
 });
-
-// ------------------- ACTION BUTTON -------------------
 messageInput.addEventListener("input", () => {
   if (messageInput.value.trim()) {
     actionBtn.classList.add("send");
@@ -203,34 +217,26 @@ messageInput.addEventListener("input", () => {
     actionBtn.textContent = "🎤";
   }
 });
-
 actionBtn.addEventListener("click", () => {
   if (actionBtn.classList.contains("send")) sendMessage();
 });
-
-// ------------------- PRESS-AND-HOLD VOICE -------------------
 let holdRecording = false;
-
 async function startRecording() {
   if (!username || !actionBtn.classList.contains("mic")) return;
   holdRecording = true;
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   mediaRecorder = new MediaRecorder(stream);
   audioChunks = [];
-
   mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
   mediaRecorder.start();
   actionBtn.classList.add("recording");
 }
-
 function stopRecording() {
   if (!holdRecording) return;
   holdRecording = false;
   if (!mediaRecorder) return;
-
   mediaRecorder.stop();
   actionBtn.classList.remove("recording");
-
   mediaRecorder.onstop = () => {
     const blob = new Blob(audioChunks, { type: "audio/webm" });
     const reader = new FileReader();
@@ -244,24 +250,18 @@ function stopRecording() {
     reader.readAsDataURL(blob);
   };
 }
-
 function cancelRecording() {
   holdRecording = false;
   if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
   actionBtn.classList.remove("recording");
 }
-
 actionBtn.addEventListener("mousedown", startRecording);
 actionBtn.addEventListener("touchstart", startRecording);
 actionBtn.addEventListener("mouseup", stopRecording);
 actionBtn.addEventListener("mouseleave", cancelRecording);
 actionBtn.addEventListener("touchend", stopRecording);
-
-// ------------------- MENU DOTS -------------------
 menuDots?.addEventListener('click', (e) => { e.stopPropagation(); menuPopup?.classList.toggle('hidden'); });
 window.addEventListener('click', (e) => { if (!menuPopup?.contains(e.target) && !menuDots?.contains(e.target)) menuPopup?.classList.add('hidden'); });
-
-// ------------------- ROOM HANDLING (FROM OLD WORKING CODE) -------------------
 createRoomBtn?.addEventListener('click', () => {
   if (!username) return alert('Join first');
   socket.emit('createRoom', username);
@@ -273,36 +273,18 @@ joinRoomBtn?.addEventListener('click', () => {
 });
 leaveRoomBtn?.addEventListener('click', () => {
   if (!username) return;
-
-  // Inform server
   socket.emit('leaveRoom', { name: username, room: currentRoom });
-
-  // Reset room
   currentRoom = 'global';
-
-  // Restore global chat heading
-  heading.textContent = 'CHAT FOR FUN NOT FOR GUN🌛❤️';
-
-  // Stop slideshow and reset slides
+  heading.textContent = 'IN THE END ALWAYS THE BIGGER ONE WINS☠️';
   stopSlideshow();
   if (slideA) { slideA.style.backgroundImage = "url('https://files.catbox.moe/3jvej7.jpg')"; slideA.classList.add("top"); }
   if (slideB) { slideB.style.backgroundImage = ""; slideB.classList.remove("top"); }
-
-  // Reset music
   musicEnabled = false;
   stopMusic();
-
-  // Hide leave button in global chat
   leaveRoomBtn.classList.add('hidden');
-
-  // Ask server for global data
   socket.emit('requestActive', 'global');
   socket.emit('clearChat');
 });
-
-
-
-// ------------------- SOCKET EVENTS -------------------
 socket.on('connect', () => { console.log('[client] connected', socket.id); });
 socket.on('message', (data) => {
   if (!data) return;
@@ -315,7 +297,6 @@ socket.on('updateMembers', (members) => {
 });
 socket.on('displayTyping', (name) => { typingIndicator.textContent = `${name} is typing...`; typingIndicator.classList.add('show'); });
 socket.on('hideTyping', () => { typingIndicator.classList.remove('show'); typingIndicator.textContent = ''; });
-
 socket.on('roomCreated', (code) => {
   alert('Your Room Code: ' + code + ' ✨');
   currentRoom = code;
@@ -328,7 +309,6 @@ socket.on('roomCreated', (code) => {
   socket.emit('requestActive', code);
   socket.emit('clearChat');
 });
-
 socket.on('roomJoined', (code) => {
   currentRoom = code;
   musicEnabled = true;
@@ -340,8 +320,24 @@ socket.on('roomJoined', (code) => {
   socket.emit('requestActive', code);
   socket.emit('clearChat');
 });
-
-socket.on('clearChat', () => { messagesDiv.innerHTML = ''; });
-socket.on('debug', (m) => console.log('[debug]', m));
-
-socket.on('connect_error', (err) => console.error('connect_error', err));
+socket.on('clearChat', () => {
+  activateShockwave();
+  const messages = document.querySelectorAll('.messages .message');
+  messages.forEach((msg, index) => {
+    msg.classList.add('cinematic');
+    msg.style.transition = 'transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease, filter 1s ease';
+    setTimeout(() => {
+      msg.style.transform = `translateZ(300px) rotateX(${720 + index * 20}deg) rotateY(${360 + index * 15}deg) scale(0.1)`;
+      msg.style.opacity = '0';
+      msg.style.filter = 'blur(5px)';
+    }, index * 80); 
+  });
+  document.body.style.transition = 'transform 0.3s ease';
+  document.body.style.transform = 'scale(1.02)';
+  setTimeout(() => {
+    document.body.style.transform = 'scale(1)';
+  }, 300);
+  setTimeout(() => {
+    messagesDiv.innerHTML = '';
+  }, messages.length * 80 + 1000);
+});
