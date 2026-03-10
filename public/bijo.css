@@ -273,36 +273,6 @@ background: url("./images/bg-global.jpg") center/cover fixed no-repeat;
   50%  { filter: brightness(1.12); }
   100% { filter: brightness(1); }
 }
-.inputBar {
-  display: flex;
-  gap: 10px;
-  padding: 14px;
-  align-items: center;
-  position: relative;
-}
-
-
-.inputBar input {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  outline: none;
-  color: #111;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.92);
-}
-
-.inputBar button {
-  width: 48px;
-  height: 48px;
-  border: none;
-  font-weight: 800;
-  color: #111;
-  cursor: pointer;
-  border-radius: 999px;
-  background: var(--gold);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
-}
 
 
 @media (max-width: 780px) {
@@ -340,25 +310,24 @@ background: url("./images/bg-global.jpg") center/cover fixed no-repeat;
     padding-bottom: calc(var(--mobile-input-height, 70px) + 20px) !important;
     overflow-y: auto !important;
   }
- .inputBar {
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 12px !important;
-  position: fixed !important;
+.inputBar {
+  position: fixed;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+
   z-index: 99999;
-  backdrop-filter: blur(8px);
-  background: rgba(0,0,0,0.55);
-  --mobile-input-height: 70px; 
+
+  --mobile-input-height: 75px;
 }
 
-.inputBar input {
-  padding: 12px !important;
+.inputWrapper input{
+  padding: 14px 16px;
 }
 
-.inputBar button {
-  width: 46px !important;
-  height: 46px !important;
+#actionBtn{
+  width:50px;
+  height:50px;
 }
 
 
@@ -416,43 +385,6 @@ background: url("./images/bg-global.jpg") center/cover fixed no-repeat;
 
 .slideshow-layer.top {
   opacity: 1;
-}
-
-
-.inputBar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-#actionBtn {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-  position: relative;
-
-  background: #25d366; 
-  color: white;
-  font-size: 24px;
-  line-height: 1;
-  transition: transform 0.2s ease;
-}
-#actionBtn.mic {
-  background: #25d366; 
-}
-#actionBtn.send {
-  background: #25d366;
-  transform: scale(1.05); 
-}
-#actionBtn.recording {
-  animation: pulse 1s infinite;
 }
 
 @keyframes pulse {
@@ -533,4 +465,155 @@ background: url("./images/bg-global.jpg") center/cover fixed no-repeat;
   font-size: 12px;
   color: #555;
   margin-left: 6px;
+}
+/* ============================= */
+/* MODERN DARK INPUT BAR */
+/* ============================= */
+
+.inputBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 16px;
+  border-radius: 18px;
+
+  background: rgba(20,20,20,0.85);
+  backdrop-filter: blur(14px);
+
+  box-shadow:
+  0 8px 30px rgba(0,0,0,0.6),
+  inset 0 0 10px rgba(255,255,255,0.03);
+}
+
+/* input wrapper */
+
+.inputWrapper{
+  flex:1;
+  position:relative;
+}
+
+.inputWrapper input{
+
+  width:100%;
+  padding:14px 18px;
+
+  border:none;
+  outline:none;
+
+  border-radius:14px;
+
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+
+  font-size:15px;
+
+  box-shadow:
+  inset 0 0 8px rgba(0,0,0,0.6);
+
+  transition:all .25s ease;
+}
+
+/* glowing focus */
+
+.inputWrapper input:focus{
+
+  box-shadow:
+  0 0 8px rgba(255,215,0,0.5),
+  inset 0 0 10px rgba(0,0,0,0.7);
+
+}
+
+/* ============================= */
+/* ACTION BUTTON */
+/* ============================= */
+
+#actionBtn{
+
+  width:52px;
+  height:52px;
+
+  border:none;
+  border-radius:50%;
+
+  cursor:pointer;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:22px;
+
+  background:linear-gradient(145deg,#111,#1c1c1c);
+
+  color:#ffd86b;
+
+  box-shadow:
+  0 6px 20px rgba(0,0,0,0.8),
+  inset 0 0 6px rgba(255,255,255,0.05),
+  0 0 10px rgba(255,215,0,0.25);
+
+  transition:all .25s ease;
+
+}
+
+#actionBtn:hover{
+  transform:scale(1.08);
+
+  box-shadow:
+  0 8px 25px rgba(0,0,0,0.9),
+  0 0 18px rgba(255,215,0,0.5);
+}
+
+/* SEND MODE */
+
+#actionBtn.send{
+
+  background:linear-gradient(145deg,#1c1c1c,#000);
+
+  color:#ffd86b;
+
+  box-shadow:
+  0 0 18px rgba(255,215,0,0.9),
+  0 6px 20px rgba(0,0,0,0.8);
+
+  transform:scale(1.08);
+
+}
+
+/* RECORDING MODE */
+
+#actionBtn.recording{
+
+  background:#ff3b3b;
+
+  animation:recordPulse 1s infinite;
+
+}
+
+/* record pulse animation */
+
+@keyframes recordPulse{
+
+  0%{
+    box-shadow:0 0 0 0 rgba(255,59,59,0.7);
+  }
+
+  70%{
+    box-shadow:0 0 0 18px rgba(255,59,59,0);
+  }
+
+  100%{
+    box-shadow:0 0 0 0 rgba(255,59,59,0);
+  }
+
+}
+#actionBtn,
+#actionBtn * {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+#actionBtn{
+  -webkit-touch-callout: none;
 }
