@@ -309,9 +309,16 @@ actionBtn.addEventListener("mousedown", startRecording);
 actionBtn.addEventListener("touchstart", startRecording);
 actionBtn.addEventListener("mouseup", stopRecording);
 actionBtn.addEventListener("mouseleave", cancelRecording);
-actionBtn.addEventListener("touchend", stopRecording);
-menuDots?.addEventListener('click', (e) => { e.stopPropagation(); menuPopup?.classList.toggle('hidden'); });
-window.addEventListener('click', (e) => { if (!menuPopup?.contains(e.target) && !menuDots?.contains(e.target)) menuPopup?.classList.add('hidden'); });
+actionBtn.addEventListener("touchend", stopRecording);menuDots?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  menuPopup?.classList.toggle('show');
+});
+
+window.addEventListener('click', (e) => {
+  if (!menuPopup?.contains(e.target) && !menuDots?.contains(e.target)) {
+    menuPopup?.classList.remove('show');
+  }
+});
 createRoomBtn?.addEventListener('click', () => {
   if (!username) return alert('Join first');
   socket.emit('createRoom', username);
