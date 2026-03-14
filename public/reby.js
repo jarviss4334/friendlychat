@@ -29,6 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof THREE !== "undefined") {
     initShockwave();
   }
+
+  if (replyPreview) replyPreview.classList.add("hidden");
+  if (replyText) replyText.innerHTML = "";
 });
 function lightningStrike(messages) {
   if (typeof THREE === 'undefined') return;
@@ -103,6 +106,10 @@ const joinRoomBtn = document.getElementById('joinRoom');
 const leaveRoomBtn = document.getElementById('leaveRoom');
 const toggleMusicBtn = document.getElementById('toggleMusic');
 const actionBtn = document.getElementById("actionBtn");
+const replyPreview = document.getElementById("replyPreview");
+const replyText = document.getElementById("replyText");
+const cancelReply = document.getElementById("cancelReply");
+let replyTo = null;
 let mediaRecorder;
 let audioChunks = [];
 let recording = false;
@@ -175,6 +182,9 @@ let typingTimer = null;
 function showApp() {
   document.querySelector('.overlay')?.classList.add('hidden');
   app.classList.remove('hidden');
+  replyTo = null;
+  replyPreview.classList.add("hidden");
+  replyText.innerHTML = "";
 }
 function appendMessage(type, payload) {
   const el = document.createElement('div');
@@ -187,9 +197,36 @@ function appendMessage(type, payload) {
     if (payload.audio) {
       appendVoiceMessage(payload.name, payload.audio, me);
       return;
-    } else {
-      el.innerHTML = `<div class="meta">${payload.name}</div><div class="body">${payload.text}</div>`;
     }
+  let replyHTML = "";
+
+if (
+  payload.replyTo &&
+  payload.replyTo.name &&
+  payload.replyTo.text
+) {
+replyHTML = `
+  <div class="replyBox">
+    <strong>${payload.replyTo.name}</strong><br>
+    ${payload.replyTo.text}
+  </div>
+`;
+}
+el.innerHTML = `
+  <div class="meta">${payload.name}</div>
+  ${replyHTML}
+  <div class="body">${payload.text || ""}</div>
+`;
+el.addEventListener("dblclick", () => {
+  if (!payload.text) return; // skip if empty message
+  replyTo = {
+    name: payload.name,
+    text: payload.text
+  };
+  replyText.innerHTML = `<strong style="color:#00ffff">${payload.name}:</strong> <span style="color:#ffffff">${payload.text}</span>`;
+  replyPreview.classList.remove("hidden");
+  messageInput.focus();
+});
   }
   messagesDiv.appendChild(el);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -240,15 +277,28 @@ joinBtn.addEventListener('click', () => {
 nameInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') joinBtn.click();
 });
-function sendMessage() {
-  const text = messageInput.value.trim();
-  if (!text) return;
-  socket.emit('chatMessage', { room: currentRoom, name: username, msg: text });
-  messageInput.value = '';
-  actionBtn.classList.remove("send");
-  actionBtn.classList.add("mic");
-  actionBtn.textContent = "🎤";
-  socket.emit('stopTyping', { name: username, room: currentRoom });
+cancelReply?.addEventListener("click", () => {
+  replyTo = null;
+  replyPreview.classList.add("hidden");
+  replyText.innerHTML = ""; 
+});
+function sendMessage(){
+ const text = messageInput.value.trim();
+ if(!text) return;
+ socket.emit('chatMessage',{
+   room:currentRoom,
+   name:username,
+   msg:text,
+   replyTo:replyTo
+ });
+ messageInput.value='';
+ replyTo=null;
+ replyPreview.classList.add("hidden");
+ replyText.innerHTML = "";
+ actionBtn.classList.remove("send");
+ actionBtn.classList.add("mic");
+ actionBtn.textContent="🎤";
+ socket.emit('stopTyping',{name:username,room:currentRoom});
 }
 messageInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -330,6 +380,9 @@ joinRoomBtn?.addEventListener('click', () => {
 });
 leaveRoomBtn?.addEventListener('click', () => {
   if (!username) return;
+  replyTo = null;
+  replyPreview.classList.add("hidden");
+  replyText.innerHTML = "";
   socket.emit('leaveRoom', { name: username, room: currentRoom });
   currentRoom = 'global';
   heading.textContent = 'IN THE END ALWAYS THE BIGGER ONE WINS☠️';
@@ -345,8 +398,16 @@ leaveRoomBtn?.addEventListener('click', () => {
 socket.on('connect', () => { console.log('[client] connected', socket.id); });
 socket.on('message', (data) => {
   if (!data) return;
-  if (data.type === 'system') appendMessage('system', data.msg);
-  else if (data.type === 'chat') appendMessage('chat', { name: data.name, text: data.msg, audio: data.audio });
+  if (data.type === 'system') {
+    appendMessage('system', data.msg);
+  } else if (data.type === 'chat') {
+    appendMessage('chat', { 
+      name: data.name, 
+      text: data.msg, 
+      audio: data.audio, 
+      replyTo: data.replyTo 
+    });
+  }
 });
 socket.on('updateMembers', (members) => {
   membersList.innerHTML = '';
@@ -379,23 +440,19 @@ socket.on('roomJoined', (code) => {
 });
 socket.on('clearChat', () => {
   const messages = Array.from(document.querySelectorAll('.messages .message'));
-
-  // ---------- 1. Screen shake ----------
   document.body.style.transition = 'transform 0.1s ease';
   document.body.style.transform = 'scale(1.02) rotateZ(1deg)';
   setTimeout(() => {
     document.body.style.transform = 'scale(1) rotateZ(0)';
   }, 200);
-
-  // ---------- 2. Message hurricane effect ----------
   messages.forEach((msg, index) => {
     msg.style.transition =
       'transform 1.5s cubic-bezier(0.77,0,0.175,1), opacity 1.2s ease, filter 1s ease';
     
     setTimeout(() => {
-      const angle = Math.random() * Math.PI * 2; // spin around
-      const radius = 200 + Math.random() * 300; // distance from center
-      const height = -window.innerHeight - Math.random() * 400; // fly upward
+      const angle = Math.random() * Math.PI * 2; 
+      const radius = 200 + Math.random() * 300; 
+      const height = -window.innerHeight - Math.random() * 400; 
       const rx = 720 + Math.random() * 360;
       const ry = 720 + Math.random() * 360;
       msg.style.transform = `translate3d(${Math.cos(angle) * radius}px, ${height}px, ${Math.sin(angle) * radius}px) rotateX(${rx}deg) rotateY(${ry}deg) scale(0.1)`;
@@ -403,13 +460,9 @@ socket.on('clearChat', () => {
       msg.style.filter = 'blur(8px)';
     }, index * 50);
   });
-
-  // ---------- 3. Remove messages ----------
   setTimeout(() => {
     messagesDiv.innerHTML = '';
   }, messages.length * 50 + 1500);
-
-  // ---------- 4. Optional: add tornado particle effect in Three.js ----------
   if (typeof THREE !== 'undefined' && scene) {
     for (let i = 0; i < 20; i++) {
       const particle = new THREE.Mesh(
